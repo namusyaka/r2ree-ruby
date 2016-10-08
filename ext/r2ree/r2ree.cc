@@ -3,8 +3,13 @@
 #include "iostream"
 #include "ruby.h"
 
-static VALUE rb_r2ree;
+using std::ignore;
+using std::tie;
 
+static VALUE rb_r2ree;
+static const VALUE NONE_INDEX = INT2NUM(-1);
+
+static r2ree::radix_tree *get_r2ree_radix_tree(VALUE klass);
 static VALUE r2ree_size(VALUE self); 
 static VALUE r2ree_s_new(int argc, VALUE *argv, VALUE self); 
 static VALUE r2ree_find(int argc, VALUE *argv, VALUE self); 
@@ -15,6 +20,16 @@ static void r2ree_free(r2ree::radix_tree *tree);
 static void r2ree_free(r2ree::radix_tree *tree) {
   tree->~radix_tree();
   ruby_xfree(tree);
+}
+
+static r2ree::radix_tree *get_r2ree_radix_tree(VALUE klass) {
+  r2ree::radix_tree *tree;
+  return Data_Get_Struct(klass, r2ree::radix_tree, tree);
+}
+
+static r2ree::parse_result match(VALUE klass, const char *path) {
+  r2ree::radix_tree *tree = get_r2ree_radix_tree(klass);
+  return tree->get(path);
 }
 
 static VALUE r2ree_s_new(int argc, VALUE *argv, VALUE self) {
@@ -36,26 +51,19 @@ static VALUE r2ree_s_new(int argc, VALUE *argv, VALUE self) {
 };
 
 static VALUE r2ree_size(VALUE self) {
-  int cid;
-  r2ree::radix_tree *tree;
-  Data_Get_Struct(self, r2ree::radix_tree, tree);
-  cid = tree->cid;
+  r2ree::radix_tree *tree = get_r2ree_radix_tree(self);
+  int cid = tree->cid;
   return INT2NUM(cid >= 0 ? cid + 1 : 0);
 };
 
 static VALUE r2ree_exist(int argc, VALUE *argv, VALUE self) {
   VALUE path;
   bool existence, leaf;
-  r2ree::radix_tree *tree;
-  r2ree::parse_result result;
-  Data_Get_Struct(self, r2ree::radix_tree, tree);
 
   rb_scan_args(argc, argv, "1", &path);
 
   if (TYPE(path) == T_STRING) {
-    result = tree->get(StringValuePtr(path));
-    existence = std::get<0>(result);
-    leaf = std::get<3>(result);
+    tie(existence, ignore, ignore, leaf) = match(self, StringValuePtr(path));
     return (existence && leaf) ? Qtrue : Qfalse;
   } else {
     return Qfalse;
@@ -64,20 +72,14 @@ static VALUE r2ree_exist(int argc, VALUE *argv, VALUE self) {
 
 static VALUE r2ree_find(int argc, VALUE *argv, VALUE self) {
   int cid;
-  bool existence, leaf;
   VALUE path;
-  r2ree::radix_tree *tree;
-  r2ree::parse_result result;
-  Data_Get_Struct(self, r2ree::radix_tree, tree);
+  bool existence, leaf;
 
   rb_scan_args(argc, argv, "1", &path);
 
   if (TYPE(path) == T_STRING) {
-    result = tree->get(StringValuePtr(path));
-    existence = std::get<0>(result);
-    cid = std::get<1>(result);
-    leaf = std::get<3>(result);
-    return (existence && leaf) ? INT2NUM(cid) : INT2NUM(-1);
+    tie(existence, cid, ignore, leaf) = match(self, StringValuePtr(path));
+    return (existence && leaf) ? INT2NUM(cid) : NONE_INDEX;
   } else {
     rb_raise(rb_eArgError, "wrong argument type, expected String");
   }
