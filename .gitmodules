@@ -1,0 +1,3 @@
+[submodule "vendor/r2ree"]
+	path = vendor/r2ree
+	url = git@github.com:namusyaka/r2ree.git
