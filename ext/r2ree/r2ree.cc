@@ -7,15 +7,15 @@ using std::ignore;
 using std::tie;
 
 static VALUE rb_r2ree;
-static const VALUE NONE_INDEX = INT2NUM(-1);
 
+static void r2ree_free(r2ree::radix_tree *tree);
 static r2ree::radix_tree *get_r2ree_radix_tree(VALUE klass);
+static r2ree::parse_result match(VALUE klass, const char *path);
 static VALUE r2ree_size(VALUE self); 
 static VALUE r2ree_s_new(int argc, VALUE *argv, VALUE self); 
 static VALUE r2ree_find(int argc, VALUE *argv, VALUE self); 
 static VALUE r2ree_exist(int argc, VALUE *argv, VALUE self); 
 static VALUE r2ree_size(VALUE self); 
-static void r2ree_free(r2ree::radix_tree *tree); 
 
 static void r2ree_free(r2ree::radix_tree *tree) {
   tree->~radix_tree();
@@ -79,7 +79,7 @@ static VALUE r2ree_find(int argc, VALUE *argv, VALUE self) {
 
   if (TYPE(path) == T_STRING) {
     tie(existence, cid, ignore, leaf) = match(self, StringValuePtr(path));
-    return (existence && leaf) ? INT2NUM(cid) : NONE_INDEX;
+    return (existence && leaf) ? INT2NUM(cid) : INT2NUM(-1);
   } else {
     rb_raise(rb_eArgError, "wrong argument type, expected String");
   }
