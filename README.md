@@ -1,5 +1,7 @@
 # R2ree
 
+[![Build Status](https://travis-ci.org/namusyaka/r2ree-ruby.svg?branch=master)](https://travis-ci.org/namusyaka/r2ree-ruby)
+
 [r2ree](https://github.com/namusyaka/r2ree) bindings for Ruby
 
 ## Installation
