@@ -4,5 +4,4 @@ source 'https://rubygems.org'
 
   gem 'bundler', '~> 1.12'
   gem 'rake', '~> 10.0'
-  gem 'rake-compiler'
   gem 'test-unit'
