@@ -1,4 +1,8 @@
 source 'https://rubygems.org'
 
 # Specify your gem's dependencies in r2ree.gemspec
-gemspec
+
+  gem 'bundler', '~> 1.12'
+  gem 'rake', '~> 10.0'
+  gem 'rake-compiler'
+  gem 'test-unit'
