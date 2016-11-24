@@ -8,10 +8,11 @@ Dir.chdir(R2REE_DIR) do
   FileUtils.cp File.join('src',     'r2ree.cc'), File.join('..', '..', 'ext', 'r2ree', 'libr2ree.cc')
 end
 
+base_flags = " -std=c++11 -Wall -Wextra -I#{R2REE_DIR}/include"
+
 $CXXFLAGS +=
   case cc_command
-  when /clang\+\+/ then " -std=c++11 -Wall -Wextra -I#{R2REE_DIR}/include"
-  when /g++/       then " -std=c++0x -Wall -Wextra -I#{R2REE_DIR}/include"
+  when /clang\+\+/, /g++/ then base_flags
   end
 
 create_makefile('r2ree')

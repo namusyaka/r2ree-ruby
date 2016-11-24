@@ -1,6 +1,14 @@
-sudo: false
 language: ruby
+sudo: required
+dist: trusty
 rvm:
   - 2.3.1
-before_install: gem install bundler -v 1.12.5
-before_script: bundle exec rake build
+before_install:
+  - gem install bundler -v 1.12.5
+  - export CXX="g++-4.8"
+addons:
+ apt:
+  sources:
+    - ubuntu-toolchain-r-test
+  packages:
+    - g++-4.8
