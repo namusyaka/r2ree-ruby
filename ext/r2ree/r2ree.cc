@@ -3,8 +3,6 @@
 #include "iostream"
 #include "ruby.h"
 
-#define R2REE_VERSION "0.0.1"
-
 using std::ignore;
 using std::tie;
 
@@ -88,13 +86,7 @@ static VALUE r2ree_find(int argc, VALUE *argv, VALUE self) {
 };
 
 extern "C" void Init_r2ree() {
-  VALUE tmp;
-
   rb_r2ree = rb_define_class("R2ree", rb_cObject);
-
-  tmp = rb_str_new2(R2REE_VERSION);
-  rb_obj_freeze(tmp);
-  rb_const_set(rb_r2ree, rb_intern("VERSION"), tmp);
 
   rb_define_singleton_method(rb_r2ree, "new",        RUBY_METHOD_FUNC(r2ree_s_new), -1);
   rb_define_method(rb_r2ree,           "exist?",     RUBY_METHOD_FUNC(r2ree_exist), -1);
