@@ -9,7 +9,7 @@ end
 gemspec = Gem::Specification::load(File.expand_path('../r2ree.gemspec', __FILE__))
 
 Rake::ExtensionTask.new('r2ree', gemspec) do |r|
-  r.lib_dir = 'lib/r2ree'
+  r.lib_dir = 'lib/'
 end
 
 task :checkout do
