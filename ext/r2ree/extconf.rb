@@ -14,4 +14,4 @@ $CXXFLAGS +=
   when /g++/       then " -std=c++0x -Wall -Wextra -I#{R2REE_DIR}/include"
   end
 
-create_makefile('r2ree/r2ree')
+create_makefile('r2ree')
